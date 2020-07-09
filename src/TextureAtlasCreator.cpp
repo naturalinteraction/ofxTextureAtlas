@@ -27,7 +27,7 @@ float TextureAtlasCreator::getPercentDone(){
 		return float(currentFile) / float(fileList.size());
 	}else
 	if (state == LOADING){
-		for(int i = 0; i < atlases.size(); i++){
+		for(unsigned int i = 0; i < atlases.size(); i++){
 			ret += atlases[i]->getLoadXmlProgress() / float(atlases.size());
 		}
 	}
@@ -37,7 +37,7 @@ float TextureAtlasCreator::getPercentDone(){
 
 string TextureAtlasCreator::getCurrentCreatingFileName(){
 	if(state == CREATING){
-		if(currentFile >= 0 && currentFile < fileList.size()){
+		if(currentFile >= 0 && currentFile < (int)fileList.size()){
 			return fileList[currentFile];
 		}
 	}
@@ -48,7 +48,7 @@ string TextureAtlasCreator::getCurrentCreatingFileName(){
 bool TextureAtlasCreator::registerWithManager(TextureAtlasDrawer& manager){
 
 	if (state == IDLE){
-		for(int i = 0; i < atlases.size(); i++){
+		for(unsigned int i = 0; i < atlases.size(); i++){
 			manager.addContent(atlases[i]);
 		}
 		return true;
@@ -63,7 +63,7 @@ vector<string> TextureAtlasCreator::getAllImagePaths(){
 
 	vector<string> list;
 	if (state == IDLE){
-		for(int i = 0; i < atlases.size(); i++){
+		for(unsigned int i = 0; i < atlases.size(); i++){
 			auto all = atlases[i]->getTextureLocations();
 			auto it = all.begin();
 			while(it != all.end()){
@@ -125,7 +125,7 @@ string TextureAtlasCreator::getMemStats(){
 
 	uint64_t pixelsInGPU = 0;
 
-	for(int i = 0; i < atlases.size(); i++){
+	for(unsigned int i = 0; i < atlases.size(); i++){
 		ofFbo & fbo = atlases[i]->getFbo();
 		if(atlases[i]->getFbo().isAllocated()){
 			int bpp = 3;
@@ -177,7 +177,7 @@ void TextureAtlasCreator::update(ofEventArgs&){
 		bool done = false;
 		
 		while( !done && c < numImagesPerUpdate ){
-			if(currentFile >= fileList.size()){
+			if(currentFile >= (int)fileList.size()){
 
 				bool ok = true;
 				state = IDLE;
@@ -234,7 +234,7 @@ bool TextureAtlasCreator::loadAtlasesFromDisk(GLint internalFormat,
 		ofDirectory d;
 		d.allowExt("xml");
 		d.listDir(directory);
-		loadingAtlas = d.numFiles();
+		loadingAtlas = d.size();
 		for(int i = 0; i < loadingAtlas; i++){
 			TextureAtlas * atlas = new TextureAtlas();
 			string xmlName = d.getPath(i);
@@ -268,7 +268,7 @@ bool TextureAtlasCreator::loadAtlasesFromDisk(GLint internalFormat,
 			state = IDLE;
 			bool ok = true;
 			ofNotifyEvent(eventAllAtlasesLoaded, ok, this);
-			for(int i = 0; i < atlases.size(); i++){
+			for(unsigned int i = 0; i < atlases.size(); i++){
 				ofRemoveListener(atlases[i]->eventAtlasLoaded, this, &TextureAtlasCreator::onAtlasLoaded);
 			}
 			ofLogWarning("TextureAtlasCreator") << getMemStats();
@@ -292,7 +292,7 @@ void TextureAtlasCreator::saveToDisk(string directory, string imgFormat /*png | 
 		ofDirectory::removeDirectory(directory, true); //remove all old atlases
 		ofDirectory::createDirectory(directory, true, true);
 
-		for(int i = 0; i < atlases.size(); i++){
+		for(unsigned int i = 0; i < atlases.size(); i++){
 			string imgName = directory + ofToString(i) + "." + imgFormat;
 			string xmlName = directory + ofToString(i) + ".xml";
 			atlases[i]->saveToDisk( imgName, xmlName );
