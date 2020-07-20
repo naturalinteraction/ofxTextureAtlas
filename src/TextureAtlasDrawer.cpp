@@ -67,7 +67,7 @@ void TextureAtlasDrawer::addContent(TextureAtlas* atlas){
 		ti.crop.width = ti.crop.width / fboSize;
 		ti.crop.height = ti.crop.height / fboSize;
 		textures[it->first] = ti;
-		ofLogNotice("TextureAtlasDrawer") << "adding atlas file reference: " << it->first;
+		// ofLogNotice("TextureAtlasDrawer") << "adding atlas file reference: " << it->first;
 		++it;
 	}
 }
