@@ -56,15 +56,25 @@ bool TextureAtlas::addTexture(string file, ofVec2f maxSize){
 
 	ofTexture tex;
 	tex.enableMipmap();
-	ofDisableArbTex();
+	// ofDisableArbTex();  // commented in order to use the mask below
 	bool loadOK = ofLoadImage(tex, file);
-	ofEnableArbTex();
+	// ofEnableArbTex();  // commented in order to use the mask below
 
 	if(loadOK){
 		ofRectangle rect;
 		rect.width = tex.getWidth();
 		rect.height = tex.getHeight();
 		
+		// rounded corners
+		ofFbo mask;
+		mask.allocate(rect.width, rect.height);
+		mask.begin();
+	    ofClear(0 , 0, 0, 0);
+	    ofSetColor(255);
+		ofDrawRectRounded(0, 0, rect.width, rect.height, 50);
+	    mask.end();
+	    tex.setAlphaMask(mask.getTexture());
+
 		ofRectangle maxRect = ofRectangle(0,0,maxSize.x, maxSize.y);
 
 		if(rect.width > rect.height){
@@ -91,6 +101,7 @@ bool TextureAtlas::addTexture(string file, ofVec2f maxSize){
 
 		if(didFit){
 			textureCrops[file] = rect;
+
 			atlasFbo.begin();
 				tex.draw(rect);
 			atlasFbo.end();
