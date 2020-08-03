@@ -71,7 +71,7 @@ bool TextureAtlas::addTexture(string file, ofVec2f maxSize){
 		mask.begin();
 	    ofClear(0 , 0, 0, 0);
 	    ofSetColor(255);
-		ofDrawRectRounded(0, 0, rect.width, rect.height, 50);
+		ofDrawRectRounded(0, 0, rect.width, rect.height, 30);
 	    mask.end();
 	    tex.setAlphaMask(mask.getTexture());
 
